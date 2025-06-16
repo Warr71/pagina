@@ -1,50 +1,39 @@
-document.getElementById("miFormulario").addEventListener("submit",function (e){
-    e.preventDefault();
+document.getElementById('registroForm').addEventListener('submit', function(event) {
+  event.preventDefault();
 
-    const nombre = document.getElementById("nombre").value.trim();
-    const apellido = document.getElementById("apellido").value.trim();
-    const correo = document.getElementById("correo").value.trim();
-    const contraseña = document.getElementById("contraseña").value.trim();
-    const direccion = document.getElementById("direccion").value.trim();
-    const distrito = document.getElementById("distrito").value.trim();
-    const provincia = document.getElementById("provincia").value.trim();
-    const departamento = document.getElementById("departamento").value;
-    const edad = document.getElementById("edad").value.trim();
-    const condicion = document.getElementById("condicion").checked;
+  let valid = true;
 
-if(nombre === "" || apellido === "" || direccion === "" || distrito === "" || provincia === ""){
-alert("Completar todos los campos por favor.");
-return;
+  function validarCampo(id, condicion) {
+    const campo = document.getElementById(id);
+    if (condicion) {
+      campo.classList.remove('is-invalid');
+    } else {
+      campo.classList.add('is-invalid');
+      valid = false;
+    }
+  }
 
-}
+  validarCampo('nombres', document.getElementById('nombres').value.trim() !== '');
+  validarCampo('apellidos', document.getElementById('apellidos').value.trim() !== '');
+  validarCampo('correo', /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(document.getElementById('correo').value));
 
-if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)){
-    alert("correo electrónico no válido");
-    return;
-}
+  validarCampo('direccion', document.getElementById('direccion').value.trim() !== '');
+  validarCampo('distrito', document.getElementById('distrito').value.trim() !== '');
+  validarCampo('provincia', document.getElementById('provincia').value.trim() !== '');
+  validarCampo('departamento', document.getElementById('departamento').value !== '');
+  validarCampo('edad', /^\d+$/.test(document.getElementById('edad').value) && parseInt(document.getElementById('edad').value) > 0);
 
-if(!/^\d{6}$/.test(contraseña)){
-    alert("La contraseña debe tener solo 6 dígitos");
-    return;
-}
+  const terminos = document.getElementById('terminos');
+  const terminosError = document.getElementById('terminosError');
+  if (!terminos.checked) {
+    terminosError.style.display = 'block';
+    valid = false;
+  } else {
+    terminosError.style.display = 'none';
+  }
 
-if(departamento === "0"){
-    alert("Selecciona un departamento por favor.");
-    return;
-}
-
-if(!/^\d+$/.test(edad)){
-    alert("La edad debe contener solo números.");
-    return;
-}
-
-if(!terminos){
-    alert("Debes aceptar los términos y condiciones.");
-    return;
-
-}
-
-alert("Formulario enviado con éxito");
+  if (valid) {
+    alert('Formulario enviado correctamente');
 this.submit();
-
+  }
 });
